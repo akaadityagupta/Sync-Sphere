@@ -1,0 +1,60 @@
+# Node / JavaScript
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Runtime files
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage
+coverage/
+coverage/lcov-report/
+
+# Build outputs
+dist/
+build/
+out/
+tmp/
+temp/
+
+# Environment files
+.env
+.env.*
+
+# Dependency directories for nested projects
+/backend/node_modules/
+/backend/dist/
+/backend/.env
+
+# Editors and OS
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Cache
+.cache/
+.parcel-cache/
+
+# Misc
+*.tgz
+*.zip
+*.tar
+
+# Optional: lockfiles are usually committed; uncomment to ignore if desired
+package-lock.json
