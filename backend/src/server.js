@@ -3,6 +3,11 @@ import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
+import deviceRoutes from "./routes/deviceRoutes.js";
+import channelRoutes from "./routes/channelRoutes.js";
+import "./config/mqtt.js";
+import "./mqtt/subscriber.js";
+import configRoutes from "./routes/configRoutes.js";
 
 
 dotenv.config();
@@ -14,6 +19,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
+app.use("/api/devices", deviceRoutes);
+app.use("/api/channels", channelRoutes);
+app.use("/api/device-config", configRoutes);
 
 
 const PORT = process.env.PORT || 5000;
