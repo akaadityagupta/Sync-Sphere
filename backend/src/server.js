@@ -7,6 +7,7 @@ import deviceRoutes from "./routes/deviceRoutes.js";
 import channelRoutes from "./routes/channelRoutes.js";
 import "./config/mqtt.js";
 import "./mqtt/subscriber.js";
+import "./utils/deviceMonitor.js";
 import configRoutes from "./routes/configRoutes.js";
 
 

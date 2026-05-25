@@ -1,78 +1,115 @@
 import mqttClient from "../config/mqtt.js";
-
 import Device from "../models/Device.js";
 import Channel from "../models/Channel.js";
 
 mqttClient.subscribe(
-  "syncsphere/device/+/config/request"
+    "syncsphere/device/+/config/request"
+);
+
+mqttClient.subscribe(
+    "syncsphere/device/+/heartbeat",
+
+    (err) => {
+
+        if (!err) {
+
+            console.log(
+                "Heartbeat Subscription Active"
+            );
+        }
+    }
 );
 
 mqttClient.on("message", async (
-  topic,
-  message
+    topic,
+    message
 ) => {
 
-  try {
+    try {
 
-    console.log("MQTT Message:", topic);
+        if (topic.includes("/heartbeat")) {
 
-    const payload =
-      JSON.parse(message.toString());
+            const deviceId =
+                topic.split("/")[2];
 
-    if (
-      topic.includes("/config/request")
-    ) {
+            console.log(
+                `${deviceId} is ONLINE`
+            );
 
-      const deviceId = payload.deviceId;
+            const updatedDevice =
+                await Device.findOneAndUpdate(
 
-      const device =
-        await Device.findOne({
-          deviceId,
-        });
+                    { deviceId },
 
-      if (!device) {
+                    {
+                        online: true,
 
-        console.log("Device not found");
+                        lastSeen: new Date(),
+                    },
 
-        return;
-      }
+                    { returnDocument: "after" }     
+                );
+        }
 
-      const channels =
-        await Channel.find({
-          device: device._id,
-        });
+        console.log("MQTT Message:", topic);
 
-      const responseTopic =
-        `syncsphere/device/${deviceId}/config/response`;
+        const payload =
+            JSON.parse(message.toString());
 
-      const responsePayload = {
+        if (
+            topic.includes("/config/request")
+        ) {
 
-        channels: channels.map(
-          (channel) => ({
-            channelId:
-              channel.channelId,
+            const deviceId = payload.deviceId;
 
-            gpio: channel.gpio,
+            const device =
+                await Device.findOne({
+                    deviceId,
+                });
 
-            state: channel.state,
-          })
-        ),
-      };
+            if (!device) {
 
-      mqttClient.publish(
-        responseTopic,
-        JSON.stringify(responsePayload)
-      );
+                console.log("Device not found");
 
-      console.log(
-        "Config Sent:",
-        responseTopic
-      );
+                return;
+            }
+
+            const channels =
+                await Channel.find({
+                    device: device._id,
+                });
+
+            const responseTopic =
+                `syncsphere/device/${deviceId}/config/response`;
+
+            const responsePayload = {
+
+                channels: channels.map(
+                    (channel) => ({
+                        channelId:
+                            channel.channelId,
+
+                        gpio: channel.gpio,
+
+                        state: channel.state,
+                    })
+                ),
+            };
+
+            mqttClient.publish(
+                responseTopic,
+                JSON.stringify(responsePayload)
+            );
+
+            console.log(
+                "Config Sent:",
+                responseTopic
+            );
+        }
+
+    } catch (error) {
+
+        console.log(error);
+
     }
-
-  } catch (error) {
-
-    console.log(error);
-
-  }
 });
