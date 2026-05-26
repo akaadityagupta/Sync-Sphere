@@ -20,12 +20,71 @@ mqttClient.subscribe(
     }
 );
 
+mqttClient.subscribe(
+    "syncsphere/device/+/channel/+/status"
+);
+
+
 mqttClient.on("message", async (
     topic,
     message
 ) => {
 
     try {
+
+        if (topic.includes("/status")) {
+
+            const parts = topic.split("/");
+
+            const deviceId = parts[2];
+
+            const channelId = parts[4];
+
+            const payload =
+                JSON.parse(message.toString());
+
+            const state = payload.state;
+
+            console.log(
+                `${deviceId} ${channelId} state: ${state}`
+            );
+
+            const device =
+                await Device.findOne({
+                    deviceId,
+                });
+
+            if (!device) {
+
+                console.log("Device not found");
+
+                return;
+            }
+
+            const channel =
+                await Channel.findOneAndUpdate(
+
+                    {
+                        device: device._id,
+
+                        channelId,
+                    },
+
+                    {
+                        state,
+                    },
+
+                    {
+                        returnDocument: "after",
+                    }
+                );
+
+            if (channel) {
+
+                console.log(`DB Updated: ${channel.channelId} -> ${channel.state}`);
+            }
+        }
+
 
         if (topic.includes("/heartbeat")) {
 
@@ -47,7 +106,7 @@ mqttClient.on("message", async (
                         lastSeen: new Date(),
                     },
 
-                    { returnDocument: "after" }     
+                    { returnDocument: "after" }
                 );
         }
 

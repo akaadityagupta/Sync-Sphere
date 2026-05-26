@@ -1,0 +1,121 @@
+@import "tailwindcss";
+
+/* Tell Tailwind where to scan for class names (paths relative to this file) */
+@source "../index.html";
+@source "./**/*.{js,jsx}";
+
+@theme {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --color-surface: #0c0c0e;
+  --color-surface-raised: #141416;
+  --color-surface-overlay: #1a1a1e;
+  --color-border: rgb(255 255 255 / 0.08);
+  --color-border-focus: rgb(99 102 241 / 0.6);
+  --color-accent: #6366f1;
+  --color-accent-hover: #818cf8;
+  --color-muted: #71717a;
+  --color-fg: #fafafa;
+}
+
+@layer base {
+  html {
+    @apply antialiased;
+  }
+
+  body {
+    @apply bg-[var(--color-surface)] text-[var(--color-fg)] font-sans;
+  }
+
+  ::selection {
+    @apply bg-indigo-500/30 text-white;
+  }
+}
+
+/* Shared button base — only @apply Tailwind utilities, not other custom classes */
+@layer components {
+  .page-shell {
+    @apply min-h-screen flex flex-col items-center justify-center px-4 py-12;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgb(99 102 241 / 0.12), transparent),
+      var(--color-surface);
+  }
+
+  .card {
+    @apply w-full max-w-md rounded-2xl border p-8 shadow-xl shadow-black/20;
+    background: var(--color-surface-raised);
+    border-color: var(--color-border);
+  }
+
+  .card-wide {
+    @apply max-w-4xl;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-zinc-300 mb-1.5;
+  }
+
+  .input {
+    @apply w-full rounded-lg border px-3.5 py-2.5 text-sm text-white placeholder:text-zinc-500 outline-none transition-colors;
+    background: var(--color-surface-overlay);
+    border-color: var(--color-border);
+  }
+
+  .input:focus {
+    border-color: var(--color-border-focus);
+    box-shadow: 0 0 0 3px rgb(99 102 241 / 0.15);
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950;
+    @apply bg-indigo-500 text-white hover:bg-indigo-400;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950;
+    @apply border text-zinc-200 hover:bg-white/5;
+    border-color: var(--color-border);
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950;
+    @apply text-zinc-400 hover:text-zinc-200 hover:bg-white/5;
+  }
+
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950;
+    @apply border text-red-400 hover:bg-red-500/10;
+    border-color: rgb(239 68 68 / 0.25);
+  }
+
+  .btn-block {
+    @apply w-full;
+  }
+
+  .link {
+    @apply text-indigo-400 hover:text-indigo-300 transition-colors;
+  }
+
+  .fade-in {
+    animation: fade-in 0.4s ease-out both;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
