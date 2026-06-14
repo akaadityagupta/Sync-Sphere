@@ -14,7 +14,7 @@ mqttClient.subscribe(
         if (!err) {
 
             console.log(
-                "Heartbeat Subscription Active"
+                "Heartbeat Active"
             );
         }
     }
