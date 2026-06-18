@@ -1,172 +1,156 @@
-# Sync Sphere Frontend Architecture & Design System
+# Sync Sphere
 
-## Project Overview
+Sync Sphere is a lightweight smart-home / IoT control platform (backend + frontend) that uses MQTT for device communication and a modern React + Tailwind frontend for device management and control.
 
-**Sync Sphere** is a futuristic smart home & IoT control platform focused on:
+Features
 
-- Real-time device control
-- Beautiful modern UI
-- MQTT-based communication
-- Smooth user experience
-- Responsive dashboard system
-- Scalable frontend architecture
+- User authentication (signup / login)
+- Device registration and management
+- Channel creation and control (toggle channel state)
+- Device configuration endpoint for devices to fetch their runtime config
+- MQTT integration for sending commands to devices
 
-The frontend will follow a **premium futuristic dark theme** inspired by:
-- Smart home operating systems
-- Cyberpunk/neon dashboards
-- Glassmorphism UI
-- Minimal modern interfaces
+Tech stack
 
----
+- Backend: Node.js, Express, Mongoose, MQTT
+- Frontend: React, Vite, Tailwind CSS, Axios, Zustand
 
-# Frontend Design Philosophy
+Quick links
 
-## UI Goals
+- Backend entry: [backend/src/server.js](backend/src/server.js#L1)
+- Frontend entry: [frontend/src/main.jsx](frontend/src/main.jsx#L1)
 
-The UI should feel like:
+Prerequisites
 
-✅ Smart Home OS  
-✅ Premium SaaS Dashboard  
-✅ Modern IoT Platform  
-✅ Clean & Futuristic
+- Node.js >= 18
+- npm or yarn
+- MongoDB instance (local or cloud)
+- MQTT broker (supports TLS in current config)
 
-NOT:
+Environment variables
 
-❌ Old admin panel  
-❌ Cluttered enterprise dashboard  
-❌ Basic bootstrap layout
+Backend (.env)
 
----
+- `MONGO_URI` - MongoDB connection string
+- `JWT_SECRET` - JWT signing secret
+- `PORT` - Backend port (default 5000)
+- `MQTT_HOST` - MQTT broker host
+- `MQTT_PORT` - MQTT broker port
+- `MQTT_USERNAME` - MQTT username (optional)
+- `MQTT_PASSWORD` - MQTT password (optional)
 
-# Frontend Tech Stack
+Frontend (.env)
 
-## Core Framework
+- `VITE_API_URL` - Backend API base URL (default `http://localhost:5000/api`)
 
-### React / Next.js
-Used for:
-- Component-based architecture
-- Routing
-- State-driven UI
-- Fast frontend rendering
+Install & run
 
----
+Backend
 
-## Styling
+1. Install dependencies
 
-### Tailwind CSS
-Used for:
-- Utility-first styling
-- Responsive layouts
-- Fast UI development
-- Reusable design system
+```
+cd backend
+npm install
+```
 
-### Custom Theme System
-Will include:
-- Global color palette
-- Glassmorphism utilities
-- Glow effects
-- Reusable UI classes
+2. Create a `.env` with the variables above, then start in development:
 
----
+```
+npm run dev
+```
 
-## Animations
+Frontend
 
-### Framer Motion
-Used for:
-- Smooth page transitions
-- Hover animations
-- Floating effects
-- Motion-based interactions
-- Dashboard animations
+1. Install dependencies
 
----
+```
+cd frontend
+npm install
+```
 
-## Icons
+2. Start the dev server
 
-### Lucide React
-Used for:
-- Modern minimal icons
-- Consistent UI visuals
+```
+npm run dev
+```
 
----
+API Reference
 
-## HTTP Requests
+Base path: `/api`
 
-### Axios
-Used for:
-- API communication
-- Authentication requests
-- Device control APIs
+Authentication
 
----
+- POST `/api/auth/signup` — Register new user
+	- body: `{ name, email, password }`
+	- response: `{ token, user }`
+- POST `/api/auth/login` — Login
+	- body: `{ email, password }`
+	- response: `{ token, user }`
 
-## State Management
+Devices (protected)
 
-### Context API / Zustand
-Used for:
-- Authentication state
-- Device state
-- Theme state
-- MQTT live updates
+- POST `/api/devices` — Register a device
+	- body: `{ deviceId, name }`
+- GET `/api/devices` — List devices for authenticated user
+- DELETE `/api/devices/:deviceId` — Remove a device
 
----
+Channels (protected)
 
-## Realtime Communication
+- POST `/api/channels/:deviceId` — Create a channel for a device
+	- body: `{ channelId, name, gpio, type, room }`
+- GET `/api/channels/:deviceId` — Get channels for a device
+- PUT `/api/channels/toggle/:channelId` — Toggle channel state (publishes MQTT command)
 
-### MQTT over WebSockets
-Used for:
-- Live device sync
-- Real-time status updates
-- IoT communication
+Device config (public for devices)
 
-### Socket.IO Client (Optional)
-May be used for:
-- Live dashboard updates
-- Notifications
-- Presence system
+- GET `/api/device-config/:deviceId` — Device fetches its configuration (channels, online state)
 
-# Sync Sphere Frontend Architecture & Design System
+MQTT topic format
 
-# Project Overview
+When toggling a channel the backend publishes to a topic of the form:
 
-**Sync Sphere** is a futuristic smart-home & IoT control platform built for:
+```
+syncsphere/device/{deviceId}/channel/{channelId}/command
+```
 
-- Real-time device communication
-- Smart automation
-- Live dashboard monitoring
-- Remote device control
-- Beautiful futuristic UI
-- Scalable IoT architecture
+Code structure (high level)
 
-The frontend is designed to feel like a:
+- backend/
+	- `src/server.js` — Express app & route mounting
+	- `src/config` — `db.js`, `mqtt.js`
+	- `src/routes` — Express route files (`authRoutes.js`, `deviceRoutes.js`, ...)
+	- `src/controllers` — Route handlers
+	- `src/models` — Mongoose models (`User`, `Device`, `Channel`)
+	- `src/mqtt` — `publisher.js`, `subscriber.js` helpers
 
-✅ Smart Home Operating System  
-✅ Premium IoT Dashboard  
-✅ Futuristic SaaS Platform
+- frontend/
+	- `src/api` — Axios client and API wrappers
+	- `src/pages` — `Login`, `Register`, `Dashboard`, `Home`
+	- `src/components` — Layout and UI components
+	- `src/store` — Zustand stores (auth, theme)
 
----
+Testing & development notes
 
-# Frontend Tech Stack
+- The backend expects JWT tokens in `Authorization: Bearer <token>` headers (frontend sets this via axios interceptors).
+- MQTT client is configured to use `mqtts` protocol by default. Adjust `src/config/mqtt.js` if your broker uses non-TLS or different connection options.
 
-## Core Framework
+Next steps / Suggestions
 
-### React.js / Next.js
+- Add validation and request schemas (e.g., using `joi` or `express-validator`).
+- Add unit / integration tests for critical controllers.
+- Improve frontend UI (components are scaffolded in `frontend/src/components`).
 
-Used for:
-- Component-based frontend architecture
-- Dynamic UI rendering
-- Routing system
-- Fast rendering performance
-- Scalable frontend structure
+Contributing
 
----
+1. Fork the repo
+2. Create a feature branch
+3. Send a PR with a clear description of changes
 
-# Styling & UI System
+License
 
-## Tailwind CSS
+This project does not include a license file; add one (e.g., MIT) if you plan to open-source it.
 
-Used for:
-- Utility-first styling
-- Fast responsive UI development
-- Reusable design patterns
-- Clean scalable styling
+Contact
+
+For questions or help, open an issue or reach out to the maintainer.
