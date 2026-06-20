@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import ThemeToggle from "../components/ThemeToggle"
+import { useAuthStore } from "../store/authStore"
 
 const platforms = [
   {
@@ -143,6 +144,8 @@ function FaqItem({ question, answer }) {
 }
 
 function Home() {
+  const token = useAuthStore((s) => s.token)
+
   return (
     <div className="page">
       <header className="nav">
@@ -155,10 +158,18 @@ function Home() {
             <a href="#faq" className="nav-link">FAQ</a>
           </nav>
 
-          <div className="nav-actions">
-            <ThemeToggle />
-            <Link to="/login" className="btn btn-link hidden-sm">Log in</Link>
-            <Link to="/register" className="btn btn-primary">Get Started</Link>
+          <div className="nav-actions ">
+            {token ? (
+
+              <Link to="/dashboard" className="btn btn-primary">Open Dashboard</Link>
+            ) : (
+              <>
+                <ThemeToggle />
+                <Link to="/login" className="btn btn-link hidden-sm">Log in</Link>
+                <Link to="/register" className="btn btn-primary">Get Started</Link>
+              </>
+            )}
+
           </div>
         </div>
       </header>
@@ -177,7 +188,16 @@ function Home() {
               and control logic remotely from the cloud.
             </p>
             <div className="gap-actions mt-8">
-              <Link to="/register" className="btn btn-primary">Connect your first device</Link>
+              {token ? (
+                <>
+                  <Link to="/dashboard" className="btn btn-primary mt-6 mb-8">Open your Device</Link>
+                </>
+              ) : (
+                <>
+                  <Link to="/register" className="btn btn-primary">Connect your first device</Link>
+                </>
+              )}
+
             </div>
             <div className="rating mt-8">
               <span className="badge">ESP8266</span>
@@ -281,9 +301,18 @@ function Home() {
               Register your ESP device, map your hardware, and start automating —
               without writing another line of firmware.
             </p>
-            <Link to="/register" className="btn btn-primary btn-on-dark mt-8">
-              Get started
-            </Link>
+            {token ? (
+              <>
+                <Link to="/dashboard" className="btn btn-primary btn-on-dark mt-8">Open your Device</Link>
+              </>
+            ) : (
+              <>
+                <Link to="/register" className="btn btn-primary btn-on-dark mt-8">
+                  Get started
+                </Link>
+              </>
+            )}
+
           </div>
         </div>
       </section>
@@ -305,7 +334,16 @@ function Home() {
             ))}
           </div>
           <div className="text-center mt-10">
-            <Link to="/register" className="btn btn-primary">Connect your first device</Link>
+            {token ? (
+              <>
+                <Link to="/dashboard" className="btn btn-primary">Open your Device</Link>
+              </>
+            ) : (
+              <>
+                <Link to="/register" className="btn btn-primary">Connect your first device</Link>
+              </>
+            )}
+
           </div>
         </div>
       </section>
@@ -331,7 +369,15 @@ function Home() {
               Join Sync Sphere — one universal firmware for ESP8266 and ESP32,
               infinite configurations from the cloud.
             </p>
-            <Link to="/register" className="btn btn-primary mt-8">Create your account</Link>
+            {token ? (
+
+              <Link to="/dashboard" className="btn btn-primary mt-8">Open Dashboard</Link>
+            ) : (
+              <>
+                <Link to="/register" className="btn btn-primary mt-8">Create your account</Link>
+              </>
+            )}
+
           </div>
         </div>
       </section>
