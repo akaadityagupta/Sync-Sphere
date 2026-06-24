@@ -2,9 +2,13 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import Home from "./pages/Home"
 import Login from "./pages/Login"
 import Register from "./pages/Register"
+import Dashboard from "./pages/Dashboard"
+import Devices from "./pages/Devices"
+import DeviceDetail from "./pages/DeviceDetail"
+import Rooms from "./pages/Rooms"
+import Automations from "./pages/Automations"
 import DashboardLayout from "./components/layout/DashboardLayout"
 import ProtectedRoute from "./routes/ProtectedRoute"
-import Dashboard from "./pages/Dashboard"
 
 function App() {
   return (
@@ -22,10 +26,10 @@ function App() {
           }
         >
           <Route path="/dashboard" element={<Dashboard />} />
-          {/* <Route path="/devices" element={<Devices />} />
+          <Route path="/devices" element={<Devices />} />
           <Route path="/devices/:deviceId" element={<DeviceDetail />} />
           <Route path="/rooms" element={<Rooms />} />
-          <Route path="/automations" element={<Automations />} /> */}
+          <Route path="/automations" element={<Automations />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Link, useNavigate, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import api from "../api/axios"
 import { useAuthStore } from "../store/authStore"
 import AuthLayout from "../components/AuthLayout"
@@ -19,17 +19,12 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
     try {
       const { data } = await api.post("/auth/login", formData)
       setAuth(data.token, data.user)
       navigate(from, { replace: true })
     } catch (error) {
-      alert(
-        error.response?.data?.message ||
-          error.response?.data?.error ||
-          "Login failed"
-      )
+      alert(error.response?.data?.message || error.response?.data?.error || "Login failed")
     }
   }
 
@@ -37,43 +32,15 @@ function Login() {
     <AuthLayout
       title="Welcome back"
       subtitle="Sign in to manage your devices and automations"
-      footer={
-        <>
-          Don&apos;t have an account?{" "}
-          <Link to="/register" className="auth-link">
-            Create one
-          </Link>
-        </>
-      }
+      footer={<>Don&apos;t have an account? <Link to="/register" className="link-accent">Create one</Link></>}
     >
       <form onSubmit={handleSubmit}>
-        <div className="form-field">
-          <label htmlFor="email" className="form-label">
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            name="email"
-            placeholder="you@example.com"
-            value={formData.email}
-            onChange={handleChange}
-            className="form-input"
-            required
-          />
+        <div className="mb-4">
+          <label htmlFor="email" className="label">Email</label>
+          <input id="email" type="email" name="email" placeholder="you@example.com" value={formData.email} onChange={handleChange} className="input" required />
         </div>
-
-        <PasswordField
-          label="Password"
-          name="password"
-          placeholder="Your password"
-          value={formData.password}
-          onChange={handleChange}
-        />
-
-        <button type="submit" className="btn btn-primary auth-submit">
-          Sign in
-        </button>
+        <PasswordField label="Password" name="password" placeholder="Your password" value={formData.password} onChange={handleChange} />
+        <button type="submit" className="btn btn-primary mt-2 w-full">Sign in</button>
       </form>
     </AuthLayout>
   )

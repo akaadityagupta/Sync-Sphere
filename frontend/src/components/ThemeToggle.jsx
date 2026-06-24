@@ -19,7 +19,7 @@ function ThemeToggle() {
       className="btn btn-ghost"
       aria-label="Toggle theme"
     >
-      {dark ? "☀️ Light" : "🌙 Dark"}
+      {dark ? "☀ Light" : "🌙 Dark"}
     </button>
   )
 }

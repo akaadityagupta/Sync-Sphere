@@ -24,7 +24,6 @@ app.use("/api/devices", deviceRoutes);
 app.use("/api/channels", channelRoutes);
 app.use("/api/device-config", configRoutes);
 
-
 const PORT = process.env.PORT || 5000;
 
 app.get("/", (req, res) => {

@@ -1,17 +1,12 @@
 import { Outlet } from "react-router-dom"
-import { useLocation } from "react-router-dom"
 import Navbar from "./Navbar"
 
 function DashboardLayout() {
-  const location = useLocation()
-
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="min-h-screen">
       <Navbar />
-      <main>
-          
+      <main className="container-app py-8">
         <Outlet />
-
       </main>
     </div>
   )

@@ -11,11 +11,11 @@ function PasswordField({
   const [show, setShow] = useState(false)
 
   return (
-    <div className="form-field">
-      <label htmlFor={name} className="form-label">
+    <div className="mb-4">
+      <label htmlFor={name} className="label">
         {label}
       </label>
-      <div className="form-password">
+      <div className="relative">
         <input
           id={name}
           type={show ? "text" : "password"}
@@ -23,13 +23,14 @@ function PasswordField({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          className="form-input"
+          className="input pr-14"
           required={required}
         />
         <button
           type="button"
-          className="form-password-toggle"
           onClick={() => setShow((s) => !s)}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium"
+          style={{ color: "var(--text-soft)" }}
           aria-label={show ? "Hide password" : "Show password"}
         >
           {show ? "Hide" : "Show"}
