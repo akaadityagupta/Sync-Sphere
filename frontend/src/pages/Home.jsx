@@ -2,27 +2,28 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 import ThemeToggle from "../components/ThemeToggle"
 import { useAuthStore } from "../store/authStore"
+import { CodeXml, Cpu, Unplug, Cloud, Zap } from "lucide-react"
 
 const platforms = [
   {
-    title: "ESP8266",
+    title: "Firmware",
     desc: "Flash the universal firmware once and manage everything from the cloud.",
-    icon: "📶",
+    icon: <CodeXml size={24} />,
   },
   {
-    title: "ESP32",
-    desc: "Same firmware, more GPIO — scale from hobby to industrial setups.",
-    icon: "🔌",
+    title: "Device",
+    desc: "Same firmware, more GPIO , scale from small to industrial setups.",
+    icon: <Cpu size={24} />,
   },
   {
     title: "Hardware",
     desc: "Relays, switches, sensors, motors, lights, pumps & industrial gear.",
-    icon: "⚙️",
+    icon: <Unplug size={24} />,
   },
   {
     title: "Cloud Dashboard",
     desc: "Channels, automations, and control logic — all configured remotely.",
-    icon: "☁️",
+    icon: <Cloud size={24} />,
   },
 ]
 
@@ -164,13 +165,17 @@ function Home() {
 
           <div className="flex items-center gap-2">
             {token ? (
-              <Link to="/dashboard" className="btn btn-primary">Open Dashboard</Link>
+              <div className="flex items-center gap-6">
+                <ThemeToggle />
+                <Link to="/dashboard" className="btn btn-primary">Open Dashboard</Link>
+              </div>
+
             ) : (
-              <>
+              <div className="flex items-center gap-6">
                 <ThemeToggle />
                 <Link to="/login" className="btn btn-link hidden sm:inline-flex">Log in</Link>
                 <Link to="/register" className="btn btn-primary">Get Started</Link>
-              </>
+              </div>
             )}
           </div>
         </div>
@@ -214,7 +219,7 @@ function Home() {
           </div>
 
           <p className="badge mt-8 inline-flex items-center gap-2 px-4 py-2">
-            <span>⚡</span>
+            <span><Zap size={18} /></span>
             Firmware stays the same — configuration comes from the cloud
           </p>
         </div>
