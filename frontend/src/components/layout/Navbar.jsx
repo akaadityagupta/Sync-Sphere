@@ -1,6 +1,7 @@
 import { Link, NavLink, useNavigate } from "react-router-dom"
 import { useAuthStore } from "../../store/authStore"
 import ThemeToggle from "../ThemeToggle"
+import { LogOut } from "lucide-react"
 
 const links = [
   { to: "/dashboard", label: "Overview", end: true },
@@ -36,11 +37,11 @@ function Navbar() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
-          <span className="text-body-sm hidden sm:inline">{user?.name}</span>
+        <div className="flex items-center gap-6">
+          <span className="border-border border rounded-full px-3 py-1.5 text-body-sm hidden sm:inline">{user?.name}</span>
           <ThemeToggle />
-          <button type="button" onClick={logout} className="btn btn-secondary text-sm">
-            Log out
+          <button type="button" onClick={logout} className="btn"  aria-label="Log out">
+            <LogOut size={18} />
           </button>
         </div>
       </div>
