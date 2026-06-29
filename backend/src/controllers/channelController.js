@@ -77,6 +77,39 @@ export const getDeviceChannels = async (req, res) => {
 };
 
 
+export const removeChannel = async (req, res) => {
+    try {
+        const { channelId } = req.params;
+
+        const channel = await Channel.findById(channelId).populate("device");
+
+        if (!channel) {
+            return res.status(404).json({
+                message: "Channel not found",
+            });
+        }
+
+        if (
+            channel.device.user.toString() !==
+            req.user._id.toString()
+        ) {
+            return res.status(401).json({
+                message: "Unauthorized",
+            });
+        }
+
+        await Channel.findByIdAndDelete(channelId);
+
+        res.status(200).json({
+            message: "Channel removed successfully",
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
+        });
+    }
+};
+
 export const toggleChannelState = async (req, res) => {
     try {
         const { channelId } = req.params;

@@ -8,3 +8,6 @@ export const createChannel = (deviceMongoId, data) =>
 
 export const toggleChannel = (channelMongoId) =>
   api.put(`/channels/toggle/${channelMongoId}`)
+
+export const deleteChannel = (channelMongoId) =>
+  api.delete(`/channels/remove/${channelMongoId}`)
