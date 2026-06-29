@@ -6,15 +6,18 @@ import DeviceCard from "../components/devices/DeviceCard"
 import AddDeviceModal from "../components/devices/AddDeviceModal"
 import { fetchDevices, deleteDevice } from "../api/devices"
 import { fetchChannels } from "../api/channels"
+import { getApiErrorMessage, shouldRedirectToGlobalErrorPage } from "../api/errorHandler"
 
 function Devices() {
   const [devices, setDevices] = useState([])
   const [channelCounts, setChannelCounts] = useState({})
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [modalOpen, setModalOpen] = useState(false)
 
   const load = useCallback(async () => {
     try {
+      setError(null)
       const { data } = await fetchDevices()
       setDevices(data)
       const counts = {}
@@ -26,7 +29,9 @@ function Devices() {
       )
       setChannelCounts(counts)
     } catch (err) {
-      console.error(err)
+      if (!shouldRedirectToGlobalErrorPage(err)) {
+        setError(getApiErrorMessage(err, "Failed to load devices"))
+      }
     } finally {
       setLoading(false)
     }
@@ -46,8 +51,9 @@ function Devices() {
         return copy
       })
     } catch (err) {
-      console.error(err)
-      alert(err.response?.data?.message || "Failed to remove device")
+      if (!shouldRedirectToGlobalErrorPage(err)) {
+        alert(getApiErrorMessage(err, "Failed to remove device"))
+      }
     }
   }
 
@@ -58,6 +64,7 @@ function Devices() {
         subtitle="Manage ESP hubs and connected hardware"
         action={<button type="button" onClick={() => setModalOpen(true)} className="btn btn-primary">Add device</button>}
       />
+      {error && <p className="alert-error">{error}</p>}
 
       {loading ? (
         <div className="flex justify-center py-20"><Spinner /></div>

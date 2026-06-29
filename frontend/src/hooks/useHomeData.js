@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { fetchDevices } from "../api/devices"
 import { fetchChannels } from "../api/channels"
+import { getApiErrorMessage, shouldRedirectToGlobalErrorPage } from "../api/errorHandler"
 
 export function useHomeData(pollMs = 15000) {
   const [devices, setDevices] = useState([])
@@ -23,7 +24,8 @@ export function useHomeData(pollMs = 15000) {
       )
       setChannels(channelResults.flat())
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to load data")
+      if (shouldRedirectToGlobalErrorPage(err)) return
+      setError(getApiErrorMessage(err, "Failed to load data"))
     } finally {
       setLoading(false)
     }

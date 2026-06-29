@@ -7,6 +7,7 @@ import Devices from "./pages/Devices"
 import DeviceDetail from "./pages/DeviceDetail"
 import Rooms from "./pages/Rooms"
 import Automations from "./pages/Automations"
+import ErrorPage from "./pages/ErrorPage"
 import DashboardLayout from "./components/layout/DashboardLayout"
 import ProtectedRoute from "./routes/ProtectedRoute"
 
@@ -17,6 +18,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/error" element={<ErrorPage />} />
 
         <Route
           element={

@@ -1,6 +1,7 @@
 import { useState } from "react"
 import Modal from "../ui/Modal"
 import { createChannel } from "../../api/channels"
+import { getApiErrorMessage, shouldRedirectToGlobalErrorPage } from "../../api/errorHandler"
 
 const TYPES = [
   { value: "light", label: "Light" },
@@ -30,7 +31,9 @@ function AddChannelModal({ open, onClose, deviceMongoId, onAdded }) {
       setForm({ channelId: "", name: "", gpio: "", type: "switch", room: "General" })
       onClose()
     } catch (err) {
-      alert(err.response?.data?.message || "Failed to create channel")
+      if (!shouldRedirectToGlobalErrorPage(err)) {
+        alert(getApiErrorMessage(err, "Failed to create channel"))
+      }
     } finally {
       setLoading(false)
     }

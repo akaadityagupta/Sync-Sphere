@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import api from "../api/axios"
+import { getApiErrorMessage, shouldRedirectToGlobalErrorPage } from "../api/errorHandler"
 import { useAuthStore } from "../store/authStore"
 import AuthLayout from "../components/AuthLayout"
 import PasswordField from "../components/PasswordField"
@@ -33,7 +34,9 @@ function Register() {
       setAuth(data.token, data.user)
       navigate("/dashboard", { replace: true })
     } catch (error) {
-      alert(error.response?.data?.message || error.response?.data?.error || "Registration failed")
+      if (!shouldRedirectToGlobalErrorPage(error)) {
+        alert(getApiErrorMessage(error, "Registration failed"))
+      }
     }
   }
 

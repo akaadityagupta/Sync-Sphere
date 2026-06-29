@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import api from "../api/axios"
+import { getApiErrorMessage, shouldRedirectToGlobalErrorPage } from "../api/errorHandler"
 import { useAuthStore } from "../store/authStore"
 import AuthLayout from "../components/AuthLayout"
 import PasswordField from "../components/PasswordField"
@@ -24,7 +25,9 @@ function Login() {
       setAuth(data.token, data.user)
       navigate(from, { replace: true })
     } catch (error) {
-      alert(error.response?.data?.message || error.response?.data?.error || "Login failed")
+      if (!shouldRedirectToGlobalErrorPage(error)) {
+        alert(getApiErrorMessage(error, "Login failed"))
+      }
     }
   }
 

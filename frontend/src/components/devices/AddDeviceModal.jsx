@@ -1,6 +1,7 @@
 import { useState } from "react"
 import Modal from "../ui/Modal"
 import { registerDevice } from "../../api/devices"
+import { getApiErrorMessage, shouldRedirectToGlobalErrorPage } from "../../api/errorHandler"
 
 function AddDeviceModal({ open, onClose, onAdded }) {
   const [form, setForm] = useState({ deviceId: "", name: "" })
@@ -15,7 +16,9 @@ function AddDeviceModal({ open, onClose, onAdded }) {
       setForm({ deviceId: "", name: "" })
       onClose()
     } catch (err) {
-      alert(err.response?.data?.message || "Failed to register device")
+      if (!shouldRedirectToGlobalErrorPage(err)) {
+        alert(getApiErrorMessage(err, "Failed to register device"))
+      }
     } finally {
       setLoading(false)
     }

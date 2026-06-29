@@ -7,7 +7,8 @@ import StatusBadge from "../components/ui/StatusBadge"
 import ChannelToggle from "../components/channels/ChannelToggle"
 import AddChannelModal from "../components/channels/AddChannelModal"
 import { fetchDevices } from "../api/devices"
-import { fetchChannels } from "../api/channels"
+import { fetchChannels, deleteChannel } from "../api/channels"
+import { getApiErrorMessage, shouldRedirectToGlobalErrorPage } from "../api/errorHandler"
 import { formatRelativeTime } from "../utils/format"
 
 function DeviceDetail() {
@@ -15,10 +16,12 @@ function DeviceDetail() {
   const [device, setDevice] = useState(null)
   const [channels, setChannels] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [modalOpen, setModalOpen] = useState(false)
 
   const load = useCallback(async () => {
     try {
+      setError(null)
       const { data: devices } = await fetchDevices()
       const found = devices.find((d) => d._id === deviceId)
       setDevice(found || null)
@@ -27,7 +30,9 @@ function DeviceDetail() {
         setChannels(data)
       }
     } catch (err) {
-      console.error(err)
+      if (!shouldRedirectToGlobalErrorPage(err)) {
+        setError(getApiErrorMessage(err, "Failed to load device details"))
+      }
     } finally {
       setLoading(false)
     }
@@ -41,6 +46,19 @@ function DeviceDetail() {
 
   const handleChannelUpdate = (updated) => {
     setChannels((prev) => prev.map((ch) => (ch._id === updated._id ? updated : ch)))
+  }
+
+  const handleRemoveChannel = async (channel) => {
+    const ok = window.confirm(`Remove channel "${channel.name}"?`)
+    if (!ok) return
+    try {
+      await deleteChannel(channel._id)
+      setChannels((prev) => prev.filter((ch) => ch._id !== channel._id))
+    } catch (err) {
+      if (!shouldRedirectToGlobalErrorPage(err)) {
+        alert(getApiErrorMessage(err, "Failed to remove channel"))
+      }
+    }
   }
 
   if (loading) return <div className="flex justify-center py-20"><Spinner /></div>
@@ -69,6 +87,7 @@ function DeviceDetail() {
           </div>
         }
       />
+      {error && <p className="alert-error">{error}</p>}
 
       {channels.length === 0 ? (
         <EmptyState
@@ -79,7 +98,7 @@ function DeviceDetail() {
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
           {channels.map((channel) => (
-            <ChannelToggle key={channel._id} channel={channel} onToggle={handleChannelUpdate} />
+            <ChannelToggle key={channel._id} channel={channel} onToggle={handleChannelUpdate} onRemove={handleRemoveChannel} />
           ))}
         </div>
       )}
